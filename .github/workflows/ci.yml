@@ -23,8 +23,8 @@ jobs:
   remote_header_integration_test:
     runs-on: ubuntu-latest
     steps:
-      # - name: Checkout the repository
-      #   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - name: Checkout the repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: Configure bazelrc
         uses: ./
         with:
@@ -39,8 +39,8 @@ jobs:
   buildbuddy_api_key_integration_test:
     runs-on: ubuntu-latest
     steps:
-      # - name: Checkout the repository
-      #   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - name: Checkout the repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: Configure bazelrc
         uses: ./
         with:

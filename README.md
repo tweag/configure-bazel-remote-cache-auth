@@ -1,5 +1,7 @@
 # Configure Bazel Remote Cache Authentication (Remote Header)
 
+[![Build](https://github.com/tweag/configure-bazel-remote-cache-auth/actions/workflows/ci.yml/badge.svg?event=schedule)](https://github.com/tweag/configure-bazel-remote-cache-auth/actions/workflows/ci.yml)
+
 Updates a bazelrc file with flags that authenticate Bazel remote cache queries or disables remote
 cache uploads if a value is not found.
 

@@ -15,9 +15,6 @@ inputs:
     type: string
     description: The path to the bazelrc file to be updated.
     default: ".bazelrc"
-  checkout_path:
-    type: string
-    default: .github/actions/configure-bazel-remote-cache-auth
 
 runs:
   using: composite

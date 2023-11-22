@@ -36,3 +36,5 @@ runs:
         BAZELRC_PATH: ${{ inputs.bazelrc_path }}
       run: |
         find . | sort
+        echo >&2 "DEBUG STOP"
+        exit 1

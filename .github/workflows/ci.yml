@@ -50,7 +50,9 @@ jobs:
         shell: bash
         run: |
           [[ -e .bazelrc.ci ]] || (echo >&2 ".bazelrc.ci was not found." && exit 1)
-          grep -q -e "--remote_header=x-buildbuddy-api-key=bb-api-key" .bazelrc.ci || \
+          # grep -q -e "--remote_header=x-buildbuddy-api-key=bb-api-key" .bazelrc.ci || \
+          #   (echo >&2 "did not find expected setting" && exit 1)
+          grep -q -e "does_not_exist" .bazelrc.ci || \
             (echo >&2 "did not find expected setting" && exit 1)
 
   all_ci_tests:

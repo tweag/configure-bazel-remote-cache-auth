@@ -22,19 +22,20 @@ inputs:
 runs:
   using: composite
   steps:
-    # - name: Checkout this repository
-    #   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-    #   with:
-    #     repository: tweag/configure-bazel-remote-cache-auth
-    #     ref: ${{ inputs.checkout_ref }}
-    #     path: ${{ inputs.checkout_path }}
-
     - shell: bash
       env:
         REMOTE_HEADER: ${{ inputs.remote_header }}
         BUILDBUDDY_API_KEY: ${{ inputs.buildbuddy_api_key }}
         BAZELRC_PATH: ${{ inputs.bazelrc_path }}
       run: |
-        find . | sort
+        # DEBUG BEGIN
+        set -x
+        # DEBUG END
+        cmd=( ./tools/configure_bazel_remote_auth.sh "${BAZELRC_PATH}" )
+        [[ -n "${REMOTE_HEADER:-}" ]] && cmd+=( --remote-header "${REMOTE_HEADER}" )
+        [[ -n "${BUILDBUDDY_API_KEY:-}" ]] && cmd+=( --buildbuddy-api-key "${BUILDBUDDY_API_KEY}" )
+        "${cmd[@]}"
+        # DEBUG BEGIN
         echo >&2 "DEBUG STOP"
         exit 1
+        # DEBUG END

@@ -19,6 +19,34 @@ assertions_sh="$(rlocation "${assertions_sh_location}")" || \
   (echo >&2 "Failed to locate ${assertions_sh_location}" && exit 1)
 source "${assertions_sh}"
 
+configure_bazel_remote_auth_sh_location=configure_bazel_remote_header/tools/configure_bazel_remote_auth.sh
+configure_bazel_remote_auth_sh="$(rlocation "${configure_bazel_remote_auth_sh_location}")" || \
+  (echo >&2 "Failed to locate ${configure_bazel_remote_auth_sh_location}" && exit 1)
+
 # MARK - Test
 
-fail "IMPLEMENT ME!"
+output="$( "${configure_bazel_remote_auth_sh}" --remote-header foo )"
+assert_equal "--remote_header=foo" "${output}" "specify remote header"
+
+output="$( "${configure_bazel_remote_auth_sh}" --buildbuddy-api-key bb-api-key )"
+assert_equal "--remote_header=x-buildbuddy-api-key=bb-api-key" "${output}" \
+  "specify BuildBuddy API key"
+
+output="$( "${configure_bazel_remote_auth_sh}" )"
+assert_equal "--noremote_upload_local_results" "${output}" \
+  "no remote header, no BuildBuddy API key"
+
+bazelrc_path="my-workspace/.bazelrc"
+mkdir -p "$(dirname "${bazelrc_path}")"
+cat >"${bazelrc_path}" <<-EOF
+# Pre-existing content
+EOF
+output="$( "${configure_bazel_remote_auth_sh}" --remote-header bar "${bazelrc_path}" )"
+expected="$(cat <<-EOF
+# Pre-existing content
+--remote_header=bar
+EOF
+)"
+assert_equal "" "${output}" "no output when path is specified"
+actual="$( <"${bazelrc_path}" )"
+assert_equal "${expected}" "${actual}" "flag values should be appended to bazelrc file"

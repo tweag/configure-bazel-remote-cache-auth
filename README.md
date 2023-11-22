@@ -5,8 +5,8 @@ cache uploads if a value is not found.
 
 - If `remote_header` is provided, it is used as the value for Bazel's
   [`--remote_header` flag](https://bazel.build/reference/command-line-reference#flag--remote_header).
-- If `buildbuddy_api_key` is provided, a remote header value is construct using the API key value
-  (e.g. `x-buildbuddy-api-key=${buildbuddy_api_key}`).
+- If `remote_header` is not provided and `buildbuddy_api_key` is provided, a remote header value is 
+  constructed using the API key value (e.g. `x-buildbuddy-api-key=${buildbuddy_api_key}`).
 - If a value is not found for `remote_header` or `buildbuddy_api_key`, the `--remote_header` flag is
   not written and the
   [`--noremote_upload_local_results` flag](https://bazel.build/reference/command-line-reference#flag--remote_upload_local_results)

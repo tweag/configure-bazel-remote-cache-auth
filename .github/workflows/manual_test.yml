@@ -1,0 +1,19 @@
+name: Manually Test configure-bazel-remote-cache-auth
+
+on:
+  workflow_dispatch:
+
+jobs:
+  manual_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure bazelrc
+        uses: ${{ 'tweag/configure-bazel-remote-cache-auth@' + github.ref }}
+        with:
+          remote_header: "foo-bar"
+      - name: Confirm bazelrc was updated
+        shell: bash
+        run: |
+          [[ -e .bazelrc ]] || (echo >&2 ".bazelrc was not found." && exit 1)
+          grep -q -e "--remote_header=foo-bar" .bazelrc || \
+            (echo >&2 "did not find expected setting" && exit 1)

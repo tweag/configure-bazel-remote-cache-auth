@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Configure bazelrc
-        uses: ${{ 'tweag/configure-bazel-remote-cache-auth@' + github.ref }}
+        uses: tweag/configure-bazel-remote-cache-auth@initial_implementation
         with:
           buildbuddy_api_key: "bb-api-key"
           bazelrc_path: .bazelrc.ci

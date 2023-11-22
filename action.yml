@@ -11,22 +11,28 @@ inputs:
     description: |
       The API key that provides access to BuildBuddy's remote cache service. If a value is not 
       specified for remote-header, one will be created using the value of this input.
+  bazelrc_path:
+    type: string
+    description: The path to the bazelrc file to be updated.
+    default: ".bazelrc"
+  checkout_path:
+    type: string
+    default: .github/actions/configure-bazel-remote-cache-auth
 
 runs:
   using: composite
   steps:
-    - name: Validate the input
-      if: ${{ inputs.remote_header == '' && inputs.buildbuddy_api_key == ''  }}
-      shell:
-      run: |
-        echo >&2 "ERROR: Either the buildbuddy_api_key or the remote_header must be specified."
-        exit 1
+    # - name: Checkout this repository
+    #   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+    #   with:
+    #     repository: tweag/configure-bazel-remote-cache-auth
+    #     ref: ${{ inputs.checkout_ref }}
+    #     path: ${{ inputs.checkout_path }}
 
-    - name: Generate the BuildBuddy remote header value
-      id: generate_buildbuddy_remote_header
+    - shell: bash
       env:
+        REMOTE_HEADER: ${{ inputs.remote_header }}
         BUILDBUDDY_API_KEY: ${{ inputs.buildbuddy_api_key }}
-      shell: |
-        echo "value=x-buildbuddy-api-key=${BUILDBUDDY_API_KEY}" >> "$GITHUB_OUTPUT"
-
-    - name: Select
+        BAZELRC_PATH: ${{ inputs.bazelrc_path }}
+      run: |
+        find . | sort

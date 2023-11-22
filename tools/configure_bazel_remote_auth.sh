@@ -24,6 +24,9 @@ write() {
 
 # MARK - Args
 
+remote_header="${REMOTE_HEADER:-}"
+buildbuddy_api_key="${BUILDBUDDY_API_KEY:-}"
+output_file="${BAZELRC_PATH:-}"
 
 while (("$#")); do
   case "${1}" in

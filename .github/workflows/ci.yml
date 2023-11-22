@@ -53,6 +53,7 @@ jobs:
           grep -q -e "--remote_header=x-buildbuddy-api-key=bb-api-key" .bazelrc.ci || \
             (echo >&2 "did not find expected setting" && exit 1)
 
+  # DEBUG BEGIN
   chuck_integration_test:
     runs-on: ubuntu-latest
     steps:
@@ -67,6 +68,7 @@ jobs:
           [[ -e .bazelrc.ci ]] || (echo >&2 ".bazelrc.ci was not found." && exit 1)
           grep -q -e "--remote_header=x-buildbuddy-api-key=bb-api-key" .bazelrc.ci || \
             (echo >&2 "did not find expected setting" && exit 1)
+  # DEBUG END
 
   all_ci_tests:
     runs-on: ubuntu-latest

@@ -23,12 +23,18 @@ runs:
   using: composite
   steps:
     - shell: bash
+      run: ${GITHUB_ACTION_PATH}/tools/configure_bazel_remote_auth.sh
       env:
         REMOTE_HEADER: ${{ inputs.remote_header }}
         BUILDBUDDY_API_KEY: ${{ inputs.buildbuddy_api_key }}
         BAZELRC_PATH: ${{ inputs.bazelrc_path }}
-      run: |
-        cmd=( "${GITHUB_ACTION_PATH}/tools/configure_bazel_remote_auth.sh" "${BAZELRC_PATH}" )
-        [[ -n "${REMOTE_HEADER:-}" ]] && cmd+=( --remote-header "${REMOTE_HEADER}" )
-        [[ -n "${BUILDBUDDY_API_KEY:-}" ]] && cmd+=( --buildbuddy-api-key "${BUILDBUDDY_API_KEY}" )
-        "${cmd[@]}"
+    # - shell: bash
+    #   env:
+    #     REMOTE_HEADER: ${{ inputs.remote_header }}
+    #     BUILDBUDDY_API_KEY: ${{ inputs.buildbuddy_api_key }}
+    #     BAZELRC_PATH: ${{ inputs.bazelrc_path }}
+    #   run: |
+    #     cmd=( "${GITHUB_ACTION_PATH}/tools/configure_bazel_remote_auth.sh" "${BAZELRC_PATH}" )
+    #     [[ -n "${REMOTE_HEADER:-}" ]] && cmd+=( --remote-header "${REMOTE_HEADER}" )
+    #     [[ -n "${BUILDBUDDY_API_KEY:-}" ]] && cmd+=( --buildbuddy-api-key "${BUILDBUDDY_API_KEY}" )
+    #     "${cmd[@]}"

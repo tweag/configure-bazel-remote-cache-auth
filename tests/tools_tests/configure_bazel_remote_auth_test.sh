@@ -23,6 +23,17 @@ configure_bazel_remote_auth_sh_location=configure_bazel_remote_header/tools/conf
 configure_bazel_remote_auth_sh="$(rlocation "${configure_bazel_remote_auth_sh_location}")" || \
   (echo >&2 "Failed to locate ${configure_bazel_remote_auth_sh_location}" && exit 1)
 
+# MARK - Setup
+
+bazelrc_path="my-workspace/.bazelrc"
+
+setup_test() {
+  local dir
+  dir="$(dirname "${bazelrc_path}")"
+  rm -rf "${dir}"
+  mkdir -p "${dir}"
+}
+
 # MARK - Test
 
 output="$( "${configure_bazel_remote_auth_sh}" --remote-header foo )"
@@ -36,8 +47,8 @@ output="$( "${configure_bazel_remote_auth_sh}" )"
 assert_equal "--noremote_upload_local_results" "${output}" \
   "no remote header, no BuildBuddy API key"
 
-bazelrc_path="my-workspace/.bazelrc"
-mkdir -p "$(dirname "${bazelrc_path}")"
+# Be sure to append output to the bazelrc file
+setup_test
 cat >"${bazelrc_path}" <<-EOF
 # Pre-existing content
 EOF
@@ -49,4 +60,20 @@ EOF
 )"
 assert_equal "" "${output}" "no output when path is specified"
 actual="$( <"${bazelrc_path}" )"
-assert_equal "${expected}" "${actual}" "flag values should be appended to bazelrc file"
+assert_equal "${expected}" "${actual}" \
+  "flag values should be appended to bazelrc file"
+
+# Use REMOTE_HEADER env var
+setup_test
+REMOTE_HEADER="foo" BAZELRC_PATH="${bazelrc_path}" \
+  "${configure_bazel_remote_auth_sh}"
+actual="$( <"${bazelrc_path}" )"
+assert_equal "--remote_header=foo" "${actual}" "use REMOTE_HEADER env var"
+
+# Use BUILDBUDDY_API_KEY env var
+setup_test
+BUILDBUDDY_API_KEY="bb-api-key" BAZELRC_PATH="${bazelrc_path}" \
+  "${configure_bazel_remote_auth_sh}"
+actual="$( <"${bazelrc_path}" )"
+assert_equal "--remote_header=x-buildbuddy-api-key=bb-api-key" "${actual}" \
+  "use REMOTE_HEADER env var"

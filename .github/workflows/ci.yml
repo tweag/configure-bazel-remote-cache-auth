@@ -53,12 +53,28 @@ jobs:
           grep -q -e "--remote_header=x-buildbuddy-api-key=bb-api-key" .bazelrc.ci || \
             (echo >&2 "did not find expected setting" && exit 1)
 
+  chuck_integration_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure bazelrc
+        uses: ${{ 'tweag/configure-bazel-remote-cache-auth@' + github.ref }}
+        with:
+          buildbuddy_api_key: "bb-api-key"
+          bazelrc_path: .bazelrc.ci
+      - name: Confirm bazelrc was updated
+        shell: bash
+        run: |
+          [[ -e .bazelrc.ci ]] || (echo >&2 ".bazelrc.ci was not found." && exit 1)
+          grep -q -e "--remote_header=x-buildbuddy-api-key=bb-api-key" .bazelrc.ci || \
+            (echo >&2 "did not find expected setting" && exit 1)
+
   all_ci_tests:
     runs-on: ubuntu-latest
     needs:
       - unit_tests
       - remote_header_integration_test
       - buildbuddy_api_key_integration_test
+      - chuck_integration_test
     if: ${{ always() }}
     steps:
       - uses: cgrindel/gha_join_jobs@794a2d117251f22607f1aab937d3fd3eaaf9a2f5 # v1.2.0

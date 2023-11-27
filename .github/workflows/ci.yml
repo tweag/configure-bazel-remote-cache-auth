@@ -1,0 +1,68 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+  schedule:
+    - cron: 1 11 * * *
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - name: Execute the unit tests
+        shell: bash
+        run: |
+          bazelisk test //...
+
+  remote_header_integration_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - name: Configure bazelrc
+        uses: ./
+        with:
+          remote_header: "foo-bar"
+      - name: Confirm bazelrc was updated
+        shell: bash
+        run: |
+          [[ -e .bazelrc ]] || (echo >&2 ".bazelrc was not found." && exit 1)
+          grep -q -e "--remote_header=foo-bar" .bazelrc || \
+            (echo >&2 "did not find expected setting" && exit 1)
+
+  buildbuddy_api_key_integration_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - name: Configure bazelrc
+        uses: ./
+        with:
+          buildbuddy_api_key: "bb-api-key"
+          bazelrc_path: .bazelrc.ci
+      - name: Confirm bazelrc was updated
+        shell: bash
+        run: |
+          [[ -e .bazelrc.ci ]] || (echo >&2 ".bazelrc.ci was not found." && exit 1)
+          grep -q -e "--remote_header=x-buildbuddy-api-key=bb-api-key" .bazelrc.ci || \
+            (echo >&2 "did not find expected setting" && exit 1)
+
+  all_ci_tests:
+    runs-on: ubuntu-latest
+    needs:
+      - unit_tests
+      - remote_header_integration_test
+      - buildbuddy_api_key_integration_test
+    if: ${{ always() }}
+    steps:
+      - uses: cgrindel/gha_join_jobs@794a2d117251f22607f1aab937d3fd3eaaf9a2f5 # v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,27 @@
+name: Configure Bazel Remote Cache Authentication
+description: |
+  Writes Bazel settings for Bazel remote cache authentication/upload to a bazelrc file.
+
+inputs:
+  remote_header:
+    type: string
+    description: The value that is written for Bazel's --remote_header flag.
+  buildbuddy_api_key:
+    type: string
+    description: |
+      The API key that provides access to BuildBuddy's remote cache service. If a value is not 
+      specified for remote-header, one will be created using the value of this input.
+  bazelrc_path:
+    type: string
+    description: The path to the bazelrc file to be updated.
+    default: ".bazelrc"
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: ${GITHUB_ACTION_PATH}/tools/configure_bazel_remote_auth.sh
+      env:
+        REMOTE_HEADER: ${{ inputs.remote_header }}
+        BUILDBUDDY_API_KEY: ${{ inputs.buildbuddy_api_key }}
+        BAZELRC_PATH: ${{ inputs.bazelrc_path }}

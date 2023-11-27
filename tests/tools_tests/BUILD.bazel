@@ -1,0 +1,11 @@
+sh_test(
+    name = "configure_bazel_remote_auth_test",
+    srcs = ["configure_bazel_remote_auth_test.sh"],
+    data = [
+        "//tools:configure_bazel_remote_auth",
+    ],
+    deps = [
+        "@bazel_tools//tools/bash/runfiles",
+        "@cgrindel_bazel_starlib//shlib/lib:assertions",
+    ],
+)

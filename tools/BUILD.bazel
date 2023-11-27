@@ -1,0 +1,5 @@
+sh_binary(
+    name = "configure_bazel_remote_auth",
+    srcs = ["configure_bazel_remote_auth.sh"],
+    visibility = ["//:__subpackages__"],
+)

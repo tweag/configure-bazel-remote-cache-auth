@@ -37,14 +37,14 @@ setup_test() {
 # MARK - Test
 
 output="$( "${configure_bazel_remote_auth_sh}" --remote-header foo )"
-assert_equal "--remote_header=foo" "${output}" "specify remote header"
+assert_equal "build --remote_header=foo" "${output}" "specify remote header"
 
 output="$( "${configure_bazel_remote_auth_sh}" --buildbuddy-api-key bb-api-key )"
-assert_equal "--remote_header=x-buildbuddy-api-key=bb-api-key" "${output}" \
+assert_equal "build --remote_header=x-buildbuddy-api-key=bb-api-key" "${output}" \
   "specify BuildBuddy API key"
 
 output="$( "${configure_bazel_remote_auth_sh}" )"
-assert_equal "--noremote_upload_local_results" "${output}" \
+assert_equal "build --noremote_upload_local_results" "${output}" \
   "no remote header, no BuildBuddy API key"
 
 # Be sure to append output to the bazelrc file
@@ -55,7 +55,7 @@ EOF
 output="$( "${configure_bazel_remote_auth_sh}" --remote-header bar "${bazelrc_path}" )"
 expected="$(cat <<-EOF
 # Pre-existing content
---remote_header=bar
+build --remote_header=bar
 EOF
 )"
 assert_equal "" "${output}" "no output when path is specified"
@@ -68,12 +68,12 @@ setup_test
 REMOTE_HEADER="foo" BAZELRC_PATH="${bazelrc_path}" \
   "${configure_bazel_remote_auth_sh}"
 actual="$( <"${bazelrc_path}" )"
-assert_equal "--remote_header=foo" "${actual}" "use REMOTE_HEADER env var"
+assert_equal "build --remote_header=foo" "${actual}" "use REMOTE_HEADER env var"
 
 # Use BUILDBUDDY_API_KEY env var
 setup_test
 BUILDBUDDY_API_KEY="bb-api-key" BAZELRC_PATH="${bazelrc_path}" \
   "${configure_bazel_remote_auth_sh}"
 actual="$( <"${bazelrc_path}" )"
-assert_equal "--remote_header=x-buildbuddy-api-key=bb-api-key" "${actual}" \
+assert_equal "build --remote_header=x-buildbuddy-api-key=bb-api-key" "${actual}" \
   "use REMOTE_HEADER env var"

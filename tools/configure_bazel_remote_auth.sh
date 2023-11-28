@@ -56,7 +56,7 @@ if [[ -z "${remote_header:-}" ]] && [[ -n "${buildbuddy_api_key:-}" ]]; then
 fi
 
 if [[ -n "${remote_header:-}" ]]; then
-  write "--remote_header=${remote_header}"
+  write "build --remote_header=${remote_header}"
 else
-  write "--noremote_upload_local_results"
+  write "build --noremote_upload_local_results"
 fi

@@ -1,10 +1,6 @@
 name: Move Major Version Tag on Release
 
 on:
-  # BEGIN HACK FOR TEST
-  push:
-    branches: ["cg/move_major_ver_tag"]
-  # END HACK FOR TEST
   release:
     types: [ published ]
   workflow_dispatch:

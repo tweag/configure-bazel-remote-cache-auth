@@ -11,7 +11,7 @@ on:
 
 jobs:
   move_major_version_tag:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
 
       # Checks out the code from your repository with all history for all 
